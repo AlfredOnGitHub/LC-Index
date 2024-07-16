@@ -11,8 +11,15 @@ from django.core.mail import send_mail
 from django.contrib.auth.models import User
 from django.conf import settings
 from .forms import RegisterForm
+from .models import Organization
+from PIL import Image
+
 
 def index(request):
+    ###############
+    # Descripción: Vista para manejar la página de inicio y el proceso de autenticación de usuarios.
+    # request: Objeto HttpRequest que contiene los datos de la solicitud.
+    ###############
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -36,12 +43,21 @@ def next_page(request):
     return render(request, 'mainapp/next_page.html')
 
 def register(request):
+    ###############
+    # Descripción: Vista para manejar el registro de nuevos usuarios y el envío de un correo electrónico de activación.
+    # request: Objeto HttpRequest que contiene los datos de la solicitud.
+    ###############
     if request.method == 'POST':
-        form = RegisterForm(request.POST)
+        form = RegisterForm(request.POST, request.FILES)
         if form.is_valid():
             user = form.save(commit=False)
-            user.is_active = False  # Desactivar cuenta hasta que se verifique el correo
+            user.is_active = False
             user.save()
+            if 'photo' in request.FILES:
+                organization = Organization.objects.get(user=user)
+                organization.photo = request.FILES['photo']
+                organization.save()
+                resize_image(organization.photo.path, 100, 100)
             current_site = get_current_site(request)
             mail_subject = 'Active su cuenta.'
             message = render_to_string('mainapp/acc_active_email.html', {
@@ -60,7 +76,24 @@ def register(request):
         form = RegisterForm()
     return render(request, 'mainapp/register.html', {'form': form})
 
+def resize_image(image_path, width, height):
+    ###############
+    # Descripción: Redimensiona una imagen a las dimensiones especificadas.
+    # image_path: Ruta del archivo de imagen que se va a redimensionar.
+    # width: Ancho deseado de la imagen redimensionada.
+    # height: Altura deseada de la imagen redimensionada.
+    ###############
+    img = Image.open(image_path)
+    img = img.resize((width, height), Image.ANTIALIAS)
+    img.save(image_path)
+
 def activate(request, uidb64, token):
+    ###############
+    # Descripción: Vista para manejar la activación de la cuenta del usuario a través del enlace enviado por correo electrónico.
+    # request: Objeto HttpRequest que contiene los datos de la solicitud.
+    # uidb64: ID del usuario codificado en base64.
+    # token: Token de activación generado para el usuario.
+    ###############
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))
         user = User.objects.get(pk=uid)
