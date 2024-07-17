@@ -22,3 +22,20 @@ def create_org_profile(sender, instance, created, **kwargs):
 @receiver(post_save, sender=User)
 def save_org_profile(sender, instance, **kwargs):
     instance.organization.save()
+
+
+class Socio(models.Model):
+    ###############
+    # Descripción: Modelo que extiende al usuario de Django para incluir información adicional de los socios.
+    ###############
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='Socio')
+    photo = models.ImageField(upload_to='profile_pics', blank=True)
+    renewal_date = models.DateField()
+    balance = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    history = models.TextField(blank=True)
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
+    NIF = models.TextField()
+
+    def __str__(self):
+        return {self.user.username}

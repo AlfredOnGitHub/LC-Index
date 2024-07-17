@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -11,7 +11,7 @@ from django.core.mail import send_mail
 from django.contrib.auth.models import User
 from django.conf import settings
 from .forms import RegisterForm
-from .models import Organization
+from .models import Organization, Socio
 from PIL import Image
 
 
@@ -48,12 +48,14 @@ def register(request):
     # request: Objeto HttpRequest que contiene los datos de la solicitud.
     ###############
     if request.method == 'POST':
+        print("Oli")
         form = RegisterForm(request.POST, request.FILES)
         if form.is_valid():
             user = form.save(commit=False)
             user.is_active = False
             user.save()
             if 'photo' in request.FILES:
+                print("Print") 
                 organization = Organization.objects.get(user=user)
                 organization.photo = request.FILES['photo']
                 organization.save()
@@ -84,7 +86,7 @@ def resize_image(image_path, width, height):
     # height: Altura deseada de la imagen redimensionada.
     ###############
     img = Image.open(image_path)
-    img = img.resize((width, height), Image.ANTIALIAS)
+    img = img.resize((width, height))
     img.save(image_path)
 
 def activate(request, uidb64, token):
@@ -108,3 +110,7 @@ def activate(request, uidb64, token):
     else:
         messages.error(request, 'El enlace de activación no es válido.')
         return redirect('index')
+    
+@login_required
+def perfil_socio(request, user):
+    return render(request, 'mainapp/perfil_socio.html', {'perfil_socio': user})
