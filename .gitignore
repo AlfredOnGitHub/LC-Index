@@ -1,5 +1,12 @@
+# Python
 __pycache__/
-*.db
 *.pyc
-.env
+
+# Django
 *.png
+media/
+*.db
+db.sqlite3
+
+# Environments
+.env
