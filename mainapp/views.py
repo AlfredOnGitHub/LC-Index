@@ -10,7 +10,7 @@ from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
 from django.contrib.auth.models import User
 from django.conf import settings
-from .forms import RegisterForm
+from .forms import RegisterForm, RegisterSocioForm
 from .models import Organization, Socio
 from PIL import Image
 
@@ -112,5 +112,16 @@ def activate(request, uidb64, token):
         return redirect('index')
     
 @login_required
-def perfil_socio(request, user):
-    return render(request, 'mainapp/perfil_socio.html', {'perfil_socio': user})
+def perfil_socio(request, id):
+    socio = get_object_or_404(Socio, id=id)
+    return render(request, 'mainapp/perfil_socio.html', {'socio': socio})
+
+def register_socio(request):
+    if request.method == 'POST':
+        form = RegisterSocioForm(request.POST,request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('index')  # Redirigir a la página de inicio después del registro
+    else:
+        form = RegisterSocioForm()
+    return render(request, 'mainapp/registro_socio.html', {'form': form})

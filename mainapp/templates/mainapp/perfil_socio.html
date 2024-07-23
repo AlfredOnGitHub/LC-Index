@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Perfil de {{ socio.username }}</title>
+    <style>
+        /* Agregar estilos CSS según sea necesario */
+        .menu {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .menu-content {
+            display: none;
+            position: absolute;
+            background-color: white;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        
+        .menu-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        
+        .menu-content a:hover {
+            background-color: #f1f1f1;
+        }
+        
+        .menu:hover .menu-content {
+            display: block;
+        }
+        
+        .menu:hover .menu-btn {
+            background-color: #3e8e41;
+        }
+        
+        .notification-badge {
+            color: white;
+            background-color: red;
+            border-radius: 50%;
+            padding: 5px;
+            font-size: 12px;
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        
+    </div>
+    <div class="menu">
+        <button class="menu-btn">Menú</button>
+        <div class="menu-content">
+            <a href="#notifications">Notificaciones <span class="notification-badge">3</span></a>
+            <a href="#settings">Configuración</a>
+        </div>
+    </div>
+    <div>
+        <h1>Perfil de Usuario</h1>
+        {% if socio.photo %}
+        <img src="{{ socio.photo.url }}" alt="Imagen de perfil de {{ socio.username }}">
+        {% else %}
+        <p>No hay imagen de perfil disponible.</p>
+        {% endif %}
+        <p>Nombre: {{socio.get_full_name}} </p>
+        <p>Email: {{ socio.email }}</p>
+        <p>Fecha de Renovación: {{ socio.renewal_date }}</p>
+        <p>Saldo: {{ socio.balance }}</p>
+        <p>Historial: {{ socio.history }}</p>
+    </div>
+    <div>
+        <p>Contacto con el club</p>
+    </div>
+</body>
+</html>
