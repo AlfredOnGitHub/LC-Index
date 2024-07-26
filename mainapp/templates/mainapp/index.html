@@ -14,7 +14,7 @@
         <input type="password" id="password" name="password" required><br>
         <input type="submit" value="Ingresar">
     </form>
-    <a href="{% url 'register' %}">Registrarse como Organización</a>
+    {% comment %} <a href="{% url 'register' %}">Registrarse como Organización</a> {% endcomment %}
     {% if messages %}
         <div>
             {% for message in messages %}
