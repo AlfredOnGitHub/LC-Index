@@ -42,6 +42,7 @@ Aplicación web creada con Django que permite a los usuarios realizar cómodamen
         ```
     5. Realiza las migraciones de la base de datos:
     ```
+    python manage.py makemigrations
     python manage.py migrate
     ```
     6. Inicia el servidor
