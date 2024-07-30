@@ -13,3 +13,4 @@ media/
 env/
 venv/
 mainapp/migrations/*
+db.sqlite3
